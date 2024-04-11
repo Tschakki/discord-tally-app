@@ -26,6 +26,6 @@ export const fetcher = async ({ query, variables }) => {
       .catch((error) => {
         console.log("Error when fetching =>", error);
   
-        return null;
+        return error;
       });
   };

@@ -51,13 +51,13 @@ Fetch the credentials from your app's settings and add them to a `.env` file (se
 
 Fetching credentials is covered in detail in the [getting started guide](https://discord.com/developers/docs/getting-started).
 
-<!-- ### Install slash commands
+### Install slash commands
 
 The commands for the example app are set up in `commands.js`. All of the commands in the `ALL_COMMANDS` array at the bottom of `commands.js` will be installed when you run the `register` command configured in `package.json`:
 
 ```
 npm run register
-``` -->
+```
 
 ### Run the app
 
