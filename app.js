@@ -7,7 +7,7 @@ import {
   MessageComponentTypes,
   ButtonStyleTypes,
 } from 'discord-interactions';
-import { fetcher } from "./fetcher";
+import { fetcher } from "./fetcher.js";
 import { VerifyDiscordRequest, getRandomEmoji, DiscordRequest } from './utils.js';
 import { getShuffledOptions, getResult } from './game.js';
 
@@ -19,14 +19,12 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
 
 // Store for in-progress games. In production, you'd want to use a DB
-const chainId = "eip155:1";
-const proposalCount = {"total": 0, "active": 0, "failed": 0, "passed": 0};
-const latestProposals = [];
-const latestProposalID = 0;
-
+let proposalCount = {"total": 0, "active": 0, "failed": 0, "passed": 0};
+let latestProposals = [];
+let latestProposalID = 0;
 const governnorInput = {
-  "id": "eip155:1:0x7e90e03654732abedf89Faf87f05BcD03ACEeFdc",
-  "slug": "abc123"
+  "id": "eip155:4202:0xcBf493d00b17Ba252FEB4403BcFf2F0520C52C7D",
+  "slug": "3rd-testing"
 };
 
 const GovernorDocument =
@@ -34,9 +32,6 @@ const GovernorDocument =
       governor(governorInput: $governnorInput) {
         id
         chainId
-        lastIndexedBlock
-        name
-        organization
         proposalStats
       }
   }
@@ -76,14 +71,17 @@ app.post('/interactions', async function (req, res) {
       variables: {
         governnorInput,
       },
-    })
+    }).then((data) => {
+      console.log("+++++ gov data2 +++++");
+      console.log(data);
+    });
 
     const { proposalStats } = govData ?? [];
     console.log("+++++ gov data +++++");
     console.log(govData);
     proposalCount = proposalStats;
 
-    if (proposalCount.total > proposalStats.total) {
+    if (proposalCount.total < proposalStats.total) {
 
       const newProposalsCount = proposalCount.total - proposalStats.total;
 
@@ -111,7 +109,6 @@ app.post('/interactions', async function (req, res) {
       return res.send({
         type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
         data: {
-          // Fetches a random emoji to send from a helper function
           content: messageContent,
         },
       });

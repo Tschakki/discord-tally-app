@@ -1,6 +1,6 @@
 # Getting Started app for Discord
 
-This project contains a basic rock-paper-scissors-style Discord app written in JavaScript, built for the [getting started guide](https://discord.com/developers/docs/getting-started).
+This project contains a basic Discord app written in JavaScript, built for the [getting started guide](https://discord.com/developers/docs/getting-started).
 
 ![Demo of app](https://github.com/discord/discord-example-app/raw/main/assets/getting-started-demo.gif?raw=true)
 
@@ -37,12 +37,10 @@ Configuring the app is covered in detail in the [getting started guide](https://
 
 ### Setup project
 
-First clone the project:
-```
-git clone https://github.com/discord/discord-example-app.git
-```
+First clone the project.
 
 Then navigate to its directory and install dependencies:
+
 ```
 cd discord-example-app
 npm install
@@ -53,15 +51,13 @@ Fetch the credentials from your app's settings and add them to a `.env` file (se
 
 Fetching credentials is covered in detail in the [getting started guide](https://discord.com/developers/docs/getting-started).
 
-> 🔑 Environment variables can be added to the `.env` file in Glitch or when developing locally, and in the Secrets tab in Replit (the lock icon on the left).
-
-### Install slash commands
+<!-- ### Install slash commands
 
 The commands for the example app are set up in `commands.js`. All of the commands in the `ALL_COMMANDS` array at the bottom of `commands.js` will be installed when you run the `register` command configured in `package.json`:
 
 ```
 npm run register
-```
+``` -->
 
 ### Run the app
 
@@ -73,7 +69,7 @@ node app.js
 
 > ⚙️ A package [like `nodemon`](https://github.com/remy/nodemon), which watches for local changes and restarts your app, may be helpful while locally developing.
 
-If you aren't following the [getting started guide](https://discord.com/developers/docs/getting-started), you can move the contents of `examples/app.js` (the finished `app.js` file) to the top-level `app.js`.
+<!-- If you aren't following the [getting started guide](https://discord.com/developers/docs/getting-started), you can move the contents of `examples/app.js` (the finished `app.js` file) to the top-level `app.js`. -->
 
 ### Set up interactivity
 
