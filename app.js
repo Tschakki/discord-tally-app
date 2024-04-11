@@ -19,23 +19,42 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
 
 // Store for in-progress games. In production, you'd want to use a DB
+const chainId = 4202;
 let proposalCount = {"total": 0, "active": 0, "failed": 0, "passed": 0};
 let latestProposals = [];
 let latestProposalID = 0;
-const governnorInput = {
+const input = {
   "id": "eip155:4202:0xcBf493d00b17Ba252FEB4403BcFf2F0520C52C7D",
   "slug": "3rd-testing"
 };
 
 const GovernorDocument =
-   `query Governor($governnorInput: GovernorInput!) {
-      governor(governorInput: $governnorInput) {
+   `query Governor($input: GovernorInput!) {
+      governor(input: $input) {
         id
         chainId
         proposalStats
       }
   }
 `;
+
+const GovernorsDocument = `
+    query Governors($chainIds: [ChainID!], $pagination: Pagination, $sort: GovernorSort) {
+  governors(chainIds: $chainIds, pagination: $pagination, sort: $sort) {
+    id
+    name
+    tokens {
+      stats {
+        voters
+      }
+    }
+    proposalStats {
+      total
+      active
+    }
+  }
+}
+    `;
 
 const ProposalsDocument =
 `query Proposals($proposalId: ProposalID!, $pagination: Pagination, $sort: ProposalSort) {
@@ -67,10 +86,16 @@ app.post('/interactions', async function (req, res) {
 
   async function fetchProposalStats() {
     const govData = await fetcher({
-      query: GovernorDocument,
+      /* query: GovernorDocument,
       variables: {
-        governnorInput,
-      },
+        input,
+      }, */
+      query: GovernorsDocument,
+      variables: {
+        chainIds: [chainId],
+        pagination: { limit: 1, offset: 0 },
+        sort: { field: "TOTAL_PROPOSALS", order: "DESC" },
+      }
     }).then((data) => {
       console.log("+++++ gov data2 +++++");
       console.log(data);
