@@ -9,7 +9,6 @@ import {
 } from 'discord-interactions';
 import { fetcher } from "./fetcher.js";
 import { VerifyDiscordRequest, getRandomEmoji, DiscordRequest } from './utils.js';
-import { getShuffledOptions, getResult } from './game.js';
 
 // Create an express app
 const app = express();
@@ -19,10 +18,10 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
 
 // Store for in-progress games. In production, you'd want to use a DB
-const chainId = 4202;
+const chainId = "eip155:4202";
 let proposalCount = {"total": 0, "active": 0, "failed": 0, "passed": 0};
 let latestProposals = [];
-let latestProposalID = 0;
+let latestProposalID = "33870600801586914737837424272564636891728657403370558615211571960791763823273";
 const input = {
   "id": "eip155:4202:0xcBf493d00b17Ba252FEB4403BcFf2F0520C52C7D",
   "slug": "3rd-testing"
@@ -57,8 +56,8 @@ const GovernorsDocument = `
     `;
 
 const ProposalsDocument =
-`query Proposals($proposalId: ProposalID!, $pagination: Pagination, $sort: ProposalSort) {
-  proposals(proposalId: $proposalId, pagination: $pagination, sort: $sort) {
+`query Proposals($chainId: ChainID!, $proposalId: ProposalID!, $pagination: Pagination, $sort: ProposalSort) {
+  proposals(chainId: $chainId, proposalId: $proposalId, pagination: $pagination, sort: $sort) {
     id
     title
     eta
@@ -82,7 +81,7 @@ app.post('/interactions', async function (req, res) {
   // Interaction type and data
   const { type, id, data } = req.body;
 
-  const intervalID = setInterval(fetchProposalStats, 60, "Parameter 1", "Parameter 2");
+  const intervalID = setInterval(fetchProposalStats, 600, "Parameter 1", "Parameter 2");
 
   async function fetchProposalStats() {
     const govData = await fetcher({
@@ -96,24 +95,27 @@ app.post('/interactions', async function (req, res) {
         pagination: { limit: 1, offset: 0 },
         sort: { field: "TOTAL_PROPOSALS", order: "DESC" },
       }
-    }).then((data) => {
-      console.log("+++++ gov data2 +++++");
-      console.log(data);
     });
-
-    const { proposalStats } = govData ?? [];
+    const projects = govData;
+    const { proposalStats } = govData.governors[0] ?? [];
     console.log("+++++ gov data +++++");
     console.log(govData);
-    proposalCount = proposalStats;
+    //const proposalStats = govData.governors[0].proposalStats.total ?? [];
 
+    console.log("+++++ proposal count +++++");
+    console.log("+++++ old +++++");
+    console.log(proposalCount);
+    console.log("+++++ new +++++");
+    console.log(proposalStats);
     if (proposalCount.total < proposalStats.total) {
 
-      const newProposalsCount = proposalCount.total - proposalStats.total;
+      const newProposalsCount =  proposalStats.total - proposalCount.total;
 
       const proposalData = await fetcher({
         query: ProposalsDocument,
         variables: {
-          proposalId: latestProposalID + 1,
+          chainId,
+          proposalId: latestProposalID,
           pagination: { limit: newProposalsCount, offset: 0 },
           sort: { field: "START_BLOCK", order: "DESC" },
         },
@@ -123,7 +125,8 @@ app.post('/interactions', async function (req, res) {
       console.log(proposalData);
 
       latestProposals = proposals;
-      latestProposalID = proposals[newProposalsCount - 1].id;
+      latestProposalID = proposals[0].id;
+      //latestProposalID = proposals[newProposalsCount - 1].id;
       proposalCount = proposalStats;
 
       const messageContent = "!!! Announcement: New Proposal !!! \n";
