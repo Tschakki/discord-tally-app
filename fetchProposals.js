@@ -5,7 +5,7 @@ import { getProposalCount, updateProposalCount } from "./data.js";
 export async function fetchProposalStats(whID, whToken) {
     let messageContent;
     const chainId = "eip155:4202";
-    let proposalCount = {"total": 0, "active": 0, "failed": 0, "passed": 0};
+    let proposalCount = getProposalCount();
     const input = {
         "id": "eip155:4202:0xcBf493d00b17Ba252FEB4403BcFf2F0520C52C7D",
         "slug": "3rd-testing"
@@ -25,7 +25,6 @@ export async function fetchProposalStats(whID, whToken) {
     console.log("+++++ proposal count +++++");
     console.log("+++++ new +++++");
     console.log(proposalStats);
-    proposalCount = getProposalCount();
     console.log("+++++ old +++++");
     console.log(proposalCount);
     if (proposalCount.total < proposalStats.total) {
