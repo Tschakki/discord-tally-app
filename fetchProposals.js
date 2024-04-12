@@ -1,16 +1,11 @@
-import fs from "fs";
 import { fetcher } from "./fetcher.js";
 import { GovernorsDocument, ProposalsDocument } from "./queries.js";
 import { getProposalCount, updateProposalCount } from "./data.js";
-import { get } from "http";
 
 export async function fetchProposalStats(whID, whToken) {
-    // Store for in-progress games. In production, you'd want to use a DB
     let messageContent;
     const chainId = "eip155:4202";
     let proposalCount = {"total": 0, "active": 0, "failed": 0, "passed": 0};
-    //let latestProposals = [];
-    //let latestProposalID = "33870600801586914737837424272564636891728657403370558615211571960791763823273";
     const input = {
         "id": "eip155:4202:0xcBf493d00b17Ba252FEB4403BcFf2F0520C52C7D",
         "slug": "3rd-testing"
@@ -34,9 +29,7 @@ export async function fetchProposalStats(whID, whToken) {
     console.log("+++++ old +++++");
     console.log(proposalCount);
     if (proposalCount.total < proposalStats.total) {
-
         const newProposalsCount =  proposalStats.total - proposalCount.total;
-
         const proposalData = await fetcher({
         query: ProposalsDocument,
         variables: {
@@ -49,16 +42,12 @@ export async function fetchProposalStats(whID, whToken) {
         const { proposals } = proposalData ?? [];
         console.log("+++++ proposal data +++++");
         console.log(proposalData);
-
-        //latestProposals = proposals;
-        //latestProposalID = proposals[0].id;
-        //latestProposalID = proposals[newProposalsCount - 1].id;
         updateProposalCount(proposalStats);
+
         messageContent = "!!! Announcement: New Proposal !!! \n";
         for (let i = 0; i < newProposalsCount; i++) {
             messageContent += proposals[i].title + "\n";
         }
-
         const jsonData = { "content": messageContent };
 
         const webhookURL = "https://discord.com/api/webhooks/" + whID + "/" + whToken;
@@ -72,15 +61,5 @@ export async function fetchProposalStats(whID, whToken) {
             messageContent = null;
             console.log("Request complete! response:", res);
           });
-
-        /* fs.writeFile("data.json", JSON.stringify(jsonData), function(err) {
-            if (err) {
-                console.log(err);
-            }
-        }); */
-    }
-
-    function sendMessage () {
-        
     }
 }

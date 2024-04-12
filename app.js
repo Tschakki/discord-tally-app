@@ -7,11 +7,8 @@ import {
   MessageComponentTypes,
   ButtonStyleTypes,
 } from 'discord-interactions';
-//import db from "./data.json" assert { type: "json" };;
-import { fetcher } from "./fetcher.js";
-import { GovernorsDocument, ProposalsDocument } from "./queries.js";
 import { fetchProposalStats } from "./fetchProposals.js";
-import { VerifyDiscordRequest, getRandomEmoji, DiscordRequest } from './utils.js';
+import { VerifyDiscordRequest, getRandomEmoji } from './utils.js';
 
 
 // Create an express app
@@ -86,23 +83,6 @@ app.post('/interactions', async function (req, res) {
       }
     }
   }
-
-  //const messageContent = await fetchProposalStats();
-
-  //Webhook URL:
-  //
-  // 
-  /* if (db.message && db.message.length > 0) {
-    console.log("+++++ message content +++++");
-    console.log(message);
-    return res.send({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        data: {
-          content: "Test",
-          //content: messageContent,
-        },
-    });
-  } */
 });
 
 app.listen(PORT, () => {
