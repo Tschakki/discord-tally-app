@@ -13,6 +13,7 @@ import { GovernorsDocument, ProposalsDocument } from "./queries.js";
 import { fetchProposalStats } from "./fetchProposals.js";
 import { VerifyDiscordRequest, getRandomEmoji, DiscordRequest } from './utils.js';
 
+
 // Create an express app
 const app = express();
 // Get port, or default to 3000
@@ -21,7 +22,6 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
 
 let interval;
-
 
 /**
  * Interactions endpoint URL where Discord will send HTTP requests
@@ -67,7 +67,8 @@ app.post('/interactions', async function (req, res) {
           },
         });
       } else {
-        interval = setInterval(fetchProposalStats, 6000, "Parameter 1", "Parameter 2");
+        
+        interval = setInterval(fetchProposalStats, 6000);
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {

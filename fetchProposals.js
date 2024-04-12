@@ -1,9 +1,12 @@
 import fs from "fs";
 import { fetcher } from "./fetcher.js";
 import { GovernorsDocument, ProposalsDocument } from "./queries.js";
+import { getProposalCount, updateProposalCount } from "./data.js";
+import { get } from "http";
 
 export async function fetchProposalStats() {
     // Store for in-progress games. In production, you'd want to use a DB
+    let messageContent;
     const chainId = "eip155:4202";
     let proposalCount = {"total": 0, "active": 0, "failed": 0, "passed": 0};
     let latestProposals = [];
@@ -14,10 +17,6 @@ export async function fetchProposalStats() {
     };
 
     const govData = await fetcher({
-        /* query: GovernorDocument,
-        variables: {
-        input,
-        }, */
         query: GovernorsDocument,
         variables: {
         chainIds: [chainId],
@@ -28,13 +27,12 @@ export async function fetchProposalStats() {
     const { proposalStats } = govData.governors[0] ?? [];
     console.log("+++++ gov data +++++");
     console.log(govData);
-    //const proposalStats = govData.governors[0].proposalStats.total ?? [];
-
     console.log("+++++ proposal count +++++");
-    console.log("+++++ old +++++");
-    console.log(proposalCount);
     console.log("+++++ new +++++");
     console.log(proposalStats);
+    proposalCount = getProposalCount();
+    console.log("+++++ old +++++");
+    console.log(proposalCount);
     if (proposalCount.total < proposalStats.total) {
 
         const newProposalsCount =  proposalStats.total - proposalCount.total;
@@ -55,9 +53,8 @@ export async function fetchProposalStats() {
         latestProposals = proposals;
         latestProposalID = proposals[0].id;
         //latestProposalID = proposals[newProposalsCount - 1].id;
-        proposalCount = proposalStats;
-
-        let messageContent = "!!! Announcement: New Proposal !!! \n";
+        updateProposalCount(proposalStats);
+        messageContent = "!!! Announcement: New Proposal !!! \n";
         for (let i = 0; i < newProposalsCount; i++) {
             messageContent += latestProposals[i].title + "\n";
         }
@@ -69,6 +66,7 @@ export async function fetchProposalStats() {
             headers: {'Content-Type': 'application/json'}, 
             body: JSON.stringify(jsonData)
           }).then(res => {
+            messageContent = null;
             console.log("Request complete! response:", res);
           });
 
@@ -77,5 +75,9 @@ export async function fetchProposalStats() {
                 console.log(err);
             }
         }); */
+    }
+
+    function sendMessage () {
+        
     }
 }
