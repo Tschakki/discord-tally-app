@@ -22,13 +22,16 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
 
 let interval;
-
+let webhookID;
+let webhookToken;
 /**
  * Interactions endpoint URL where Discord will send HTTP requests
  */
 app.post('/interactions', async function (req, res) {
+  console.log("+++++ request +++++");
+  console.log(req.body);
   // Interaction type and data
-  const { type, id, data } = req.body;
+  const { type, id, data, guild_id } = req.body;
 
   /**
    * Handle verification requests
@@ -67,14 +70,19 @@ app.post('/interactions', async function (req, res) {
           },
         });
       } else {
-        
-        interval = setInterval(fetchProposalStats, 6000);
+        if (guild_id === "1228281036635508736") {
+          webhookID = "1228281325673250857";
+          webhookToken = "cOLF9Bcqc8SsOJkY2YEqxfV8gRwRjdrNOJZEOq9gbBo7p1MP9ej4ALkc2f3l25rYB-mV";
+        } 
+
+        interval = setInterval(fetchProposalStats, 60000, webhookID, webhookToken);
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
             content: "Tracking started",
           },
         });
+        
       }
     }
   }

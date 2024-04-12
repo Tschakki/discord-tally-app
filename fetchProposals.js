@@ -4,13 +4,13 @@ import { GovernorsDocument, ProposalsDocument } from "./queries.js";
 import { getProposalCount, updateProposalCount } from "./data.js";
 import { get } from "http";
 
-export async function fetchProposalStats() {
+export async function fetchProposalStats(whID, whToken) {
     // Store for in-progress games. In production, you'd want to use a DB
     let messageContent;
     const chainId = "eip155:4202";
     let proposalCount = {"total": 0, "active": 0, "failed": 0, "passed": 0};
-    let latestProposals = [];
-    let latestProposalID = "33870600801586914737837424272564636891728657403370558615211571960791763823273";
+    //let latestProposals = [];
+    //let latestProposalID = "33870600801586914737837424272564636891728657403370558615211571960791763823273";
     const input = {
         "id": "eip155:4202:0xcBf493d00b17Ba252FEB4403BcFf2F0520C52C7D",
         "slug": "3rd-testing"
@@ -50,18 +50,21 @@ export async function fetchProposalStats() {
         console.log("+++++ proposal data +++++");
         console.log(proposalData);
 
-        latestProposals = proposals;
-        latestProposalID = proposals[0].id;
+        //latestProposals = proposals;
+        //latestProposalID = proposals[0].id;
         //latestProposalID = proposals[newProposalsCount - 1].id;
         updateProposalCount(proposalStats);
         messageContent = "!!! Announcement: New Proposal !!! \n";
         for (let i = 0; i < newProposalsCount; i++) {
-            messageContent += latestProposals[i].title + "\n";
+            messageContent += proposals[i].title + "\n";
         }
 
         const jsonData = { "content": messageContent };
 
-        fetch("https://discord.com/api/webhooks/1228018587797553243/1eMBRsZRdSVc5JfT6E-GUF_QNOUfE_ipqxM8ujNC6GB0C0y47z7fpnluApYbzBtF9KND", {
+        const webhookURL = "https://discord.com/api/webhooks/" + whID + "/" + whToken;
+        //fetch("https://discord.com/api/webhooks/1228018587797553243/1eMBRsZRdSVc5JfT6E-GUF_QNOUfE_ipqxM8ujNC6GB0C0y47z7fpnluApYbzBtF9KND", {
+        //fetch("https://discord.com/api/webhooks/1228281325673250857/cOLF9Bcqc8SsOJkY2YEqxfV8gRwRjdrNOJZEOq9gbBo7p1MP9ej4ALkc2f3l25rYB-mV", {
+        fetch(webhookURL, {
             method: "POST",
             headers: {'Content-Type': 'application/json'}, 
             body: JSON.stringify(jsonData)
