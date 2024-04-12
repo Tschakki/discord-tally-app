@@ -71,7 +71,7 @@ app.post('/interactions', async function (req, res) {
           webhookID = "1228281325673250857";
           webhookToken = "cOLF9Bcqc8SsOJkY2YEqxfV8gRwRjdrNOJZEOq9gbBo7p1MP9ej4ALkc2f3l25rYB-mV";
         } 
-        interval = setInterval(fetchProposalStats, 500000, webhookID, webhookToken);
+        interval = setInterval(fetchProposalStats, 300000, webhookID, webhookToken);
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {

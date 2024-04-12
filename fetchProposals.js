@@ -35,7 +35,7 @@ export async function fetchProposalStats(whID, whToken) {
             chainId,
             //proposalId: latestProposalID,
             pagination: { limit: newProposalsCount, offset: 0 },
-            sort: { field: "START_BLOCK", order: "DESC" },
+            sort: { field: "CREATED_AT", order: "DESC" },
         },
         })
         const { proposals } = proposalData ?? [];
