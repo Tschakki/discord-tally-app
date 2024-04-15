@@ -1,27 +1,36 @@
 import { fetcher } from "./fetcher.js";
-import { GovernorsDocument, ProposalsDocument } from "./queries.js";
+import { GovernorsDocument, ProposalsDocument, Chains } from "./queries.js";
 import { getProposalCount, updateProposalCount } from "./data.js";
 
 export async function fetchProposalStats(whID, whToken) {
     let messageContent;
+    const governorAddr = "0xcBf493d00b17Ba252FEB4403BcFf2F0520C52C7D";
     const chainId = "eip155:4202";
     let proposalCount = getProposalCount();
-    const input = {
-        "id": "eip155:4202:0xcBf493d00b17Ba252FEB4403BcFf2F0520C52C7D",
-        "slug": "3rd-testing"
-    };
+    /* const chainData = await fetcher({
+        query: Chains,
+        variables: {
+        pagination: { limit: 99, offset: 0 },
+        sort: { field: "TOTAL_PROPOSALS", order: "ASC" },
+        }
+    });
+    console.log("+++++ chain data +++++");
+    console.log(chainData); */
 
     const govData = await fetcher({
         query: GovernorsDocument,
         variables: {
         chainIds: [chainId],
-        pagination: { limit: 1, offset: 0 },
+        pagination: { limit: 10, offset: 0 },
         sort: { field: "TOTAL_PROPOSALS", order: "DESC" },
         }
     });
     const { proposalStats } = govData.governors[0] ?? [];
     console.log("+++++ gov data +++++");
     console.log(govData);
+    for (let i = 0; i < govData.governors.length; i++) {
+        console.log(govData.governors[i].proposalStats);
+    }
     console.log("+++++ proposal count +++++");
     console.log("+++++ new +++++");
     console.log(proposalStats);
@@ -33,6 +42,7 @@ export async function fetchProposalStats(whID, whToken) {
         query: ProposalsDocument,
         variables: {
             chainId,
+            governors: [governorAddr],
             //proposalId: latestProposalID,
             pagination: { limit: newProposalsCount, offset: 0 },
             sort: { field: "CREATED_AT", order: "DESC" },
@@ -46,6 +56,7 @@ export async function fetchProposalStats(whID, whToken) {
         messageContent = "!!! Announcement: New Proposal !!! \n";
         for (let i = 0; i < newProposalsCount; i++) {
             messageContent += proposals[i].title + "\n";
+            console.log(proposals[i].governor.organization);
         }
         const jsonData = { "content": messageContent };
 
