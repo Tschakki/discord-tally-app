@@ -1,25 +1,17 @@
 # Getting Started app for Discord
 
-This project contains a basic Discord app written in JavaScript, built for the [getting started guide](https://discord.com/developers/docs/getting-started).
-
-![Demo of app](https://github.com/discord/discord-example-app/raw/main/assets/getting-started-demo.gif?raw=true)
-
-> ✨ A version of this code is also hosted **[on Glitch 🎏](https://glitch.com/~getting-started-discord)** and **[on Replit 🌀](https://replit.com/github/discord/discord-example-app)**
+This project contains a Discord app that announces latest proposals for a specific Tally instance, based on the [getting started guide](https://discord.com/developers/docs/getting-started).
 
 ## Project structure
 Below is a basic overview of the project structure:
 
 ```
-├── examples    -> short, feature-specific sample apps
-│   ├── app.js  -> finished app.js code
-│   ├── button.js
-│   ├── command.js
-│   ├── modal.js
-│   ├── selectMenu.js
 ├── .env.sample -> sample .env file
 ├── app.js      -> main entrypoint for app
 ├── commands.js -> slash command payloads + helpers
-├── game.js     -> logic specific to RPS
+├── fetcher.js  -> wrapper for fetching the data
+├── fetchProposals.js  -> execution of Tally queries
+├── queries.js  -> definitions for Tally queries
 ├── utils.js    -> utility functions and enums
 ├── package.json
 ├── README.md
@@ -42,7 +34,7 @@ First clone the project.
 Then navigate to its directory and install dependencies:
 
 ```
-cd discord-example-app
+cd discord-tally-app
 npm install
 ```
 ### Get app credentials
@@ -68,8 +60,6 @@ node app.js
 ```
 
 > ⚙️ A package [like `nodemon`](https://github.com/remy/nodemon), which watches for local changes and restarts your app, may be helpful while locally developing.
-
-<!-- If you aren't following the [getting started guide](https://discord.com/developers/docs/getting-started), you can move the contents of `examples/app.js` (the finished `app.js` file) to the top-level `app.js`. -->
 
 ### Set up interactivity
 
