@@ -55,8 +55,19 @@ export async function fetchProposalStats(whID, whToken) {
 
         messageContent = "!!! Announcement: New Proposal !!! \n";
         for (let i = 0; i < newProposalsCount; i++) {
-            messageContent += proposals[i].title + "\n";
-            console.log(proposals[i].governor.organization);
+            messageContent += "------------------------------------ \n";
+            messageContent += "[" + proposals[i].title + "](https://www.tally.xyz/gov/3rd-testing/proposal/" + proposals[i].id + ") \n";
+            let proposer;
+            if (proposals[i].proposer.name) {
+                proposer = proposals[i].proposer.name;
+            } else if (proposals[i].proposer.ens) {
+                proposer = proposals[i].proposer.ens;
+            } else {
+                proposer = proposals[i].proposer.address;
+            }
+            messageContent += "Proposed by: " + proposer + "\n";
+            //messageContent += "Link: https://www.tally.xyz/gov/3rd-testing/proposal/" + proposals[i].id + "\n";
+            //console.log(proposals[i].governor.organization);
         }
         const jsonData = { "content": messageContent };
 

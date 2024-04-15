@@ -84,6 +84,11 @@ export const ProposalsDocument = `query Proposals($chainId: ChainID!, $governors
     block {
       timestamp
     }
+    proposer {
+      address
+      ens
+      name
+    }
     voteStats {
       support
       weight
