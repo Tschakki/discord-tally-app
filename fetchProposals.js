@@ -56,7 +56,7 @@ export async function fetchProposalStats(whID, whToken) {
         messageContent = "!!! Announcement: New Proposal !!! \n";
         for (let i = 0; i < newProposalsCount; i++) {
             messageContent += "------------------------------------ \n";
-            messageContent += "[" + proposals[i].title + "](https://www.tally.xyz/gov/3rd-testing/proposal/" + proposals[i].id + ") \n";
+            messageContent += "[" + proposals[i].title + "](<https://www.tally.xyz/gov/3rd-testing/proposal/" + proposals[i].id + ">) \n";
             let proposer;
             if (proposals[i].proposer.name) {
                 proposer = proposals[i].proposer.name;
@@ -80,7 +80,7 @@ export async function fetchProposalStats(whID, whToken) {
             body: JSON.stringify(jsonData)
           }).then(res => {
             messageContent = null;
-            console.log("Request complete! response:", res);
+            //console.log("Request complete! response:", res);
           });
     }
 }

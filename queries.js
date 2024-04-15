@@ -73,6 +73,14 @@ export const ProposalsDocument = `query Proposals($chainId: ChainID!, $governors
     id
     title
     eta
+    end {
+      ... on Block {
+        timestamp
+      }
+      ... on BlocklessTimestamp {
+        timestamp
+      }
+    }
     governor {
       name
       organization {

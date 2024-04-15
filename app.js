@@ -8,6 +8,7 @@ import {
   ButtonStyleTypes,
 } from 'discord-interactions';
 import { fetchProposalStats } from "./fetchProposals.js";
+import { fetchProposalEtas } from "./proposalRemind.js";
 import { VerifyDiscordRequest, getRandomEmoji } from './utils.js';
 
 
@@ -18,7 +19,8 @@ const PORT = process.env.PORT || 3000;
 // Parse request body and verifies incoming requests using discord-interactions package
 app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
 
-let interval;
+let interval1;
+let interval2;
 let webhookID;
 let webhookToken;
 /**
@@ -57,9 +59,11 @@ app.post('/interactions', async function (req, res) {
     } 
 
     if (name === 'track') {
-      if (interval) {
-        clearInterval(interval);
-        interval = null;
+      if (interval1 || interval2) {
+        clearInterval(interval1);
+        clearInterval(interval2);
+        interval1 = null;
+        interval2 = null;
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
@@ -71,7 +75,10 @@ app.post('/interactions', async function (req, res) {
           webhookID = "1228281325673250857";
           webhookToken = "cOLF9Bcqc8SsOJkY2YEqxfV8gRwRjdrNOJZEOq9gbBo7p1MP9ej4ALkc2f3l25rYB-mV";
         } 
-        interval = setInterval(fetchProposalStats, 300000, webhookID, webhookToken);
+        // Checks for new proposals every 5min
+        interval1 = setInterval(fetchProposalStats, 300000, webhookID, webhookToken);
+        // Checks for ending proposals every 1,5h
+        interval2 = setInterval(fetchProposalEtas, 6000000, webhookID, webhookToken);
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
