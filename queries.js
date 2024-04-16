@@ -103,5 +103,8 @@ export const ProposalsDocument = `query Proposals($chainId: ChainID!, $governors
       votes
       percent
     }
+    statusChanges {
+      type
+    }
   }
 }`;

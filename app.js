@@ -27,8 +27,6 @@ let webhookToken;
  * Interactions endpoint URL where Discord will send HTTP requests
  */
 app.post('/interactions', async function (req, res) {
-  console.log("+++++ request +++++");
-  console.log(req.body);
   // Interaction type and data
   const { type, id, data, guild_id } = req.body;
 
@@ -58,7 +56,9 @@ app.post('/interactions', async function (req, res) {
       });
     } 
 
+    // "track" command
     if (name === 'track') {
+      // If tracking is already active, stop it
       if (interval1 || interval2) {
         clearInterval(interval1);
         clearInterval(interval2);
@@ -70,14 +70,17 @@ app.post('/interactions', async function (req, res) {
             content: "Tracking stopped",
           },
         });
+      // If tracking is not active, start it
       } else {
+        // Check guild_id to determine which webhook to use
         if (guild_id === "1228281036635508736") {
           webhookID = "1228281325673250857";
           webhookToken = "cOLF9Bcqc8SsOJkY2YEqxfV8gRwRjdrNOJZEOq9gbBo7p1MP9ej4ALkc2f3l25rYB-mV";
         } 
         // Checks for new proposals every 5min
         interval1 = setInterval(fetchProposalStats, 300000, webhookID, webhookToken);
-        // Checks for ending proposals every 1,5h
+        // Checks for ending proposals every hour
+        await fetchProposalEtas(webhookID,webhookToken);
         interval2 = setInterval(fetchProposalEtas, 6000000, webhookID, webhookToken);
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -85,7 +88,6 @@ app.post('/interactions', async function (req, res) {
             content: "Tracking started",
           },
         });
-        
       }
     }
   }
