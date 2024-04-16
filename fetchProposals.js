@@ -1,6 +1,6 @@
 import { fetcher } from "./fetcher.js";
 import { GovernorsDocument, ProposalsDocument, Chains } from "./queries.js";
-import { getProposalCount, updateProposalCount } from "./data.js";
+import { getProposalCount, setProposalCount } from "./data.js";
 
 export async function fetchProposalStats(whID, whToken) {
     let messageContent;
@@ -55,7 +55,7 @@ export async function fetchProposalStats(whID, whToken) {
         const { proposals } = proposalData ?? [];
         console.log("+++++ proposal data +++++");
         console.log(proposalData);
-        updateProposalCount(proposalStats);
+        setProposalCount(proposalStats);
 
         // Create message content that announces new proposals
         messageContent = "!!! Announcement: New Proposal !!! \n";
@@ -92,8 +92,10 @@ export async function fetchProposalStats(whID, whToken) {
     // If proposal count is not initialized yet
     } else if (proposalCount.total == 0){
         // Initialize proposal count values
-        updateProposalCount(proposalStats);
+        setProposalCount(proposalStats);
         console.log("+++++ initial proposal count +++++");
         console.log(proposalStats);
+    } else {
+        console.log("+++++ no new proposals +++++");
     }
 }

@@ -78,10 +78,11 @@ app.post('/interactions', async function (req, res) {
           webhookToken = "cOLF9Bcqc8SsOJkY2YEqxfV8gRwRjdrNOJZEOq9gbBo7p1MP9ej4ALkc2f3l25rYB-mV";
         } 
         // Checks for new proposals every 5min
+        await fetchProposalStats(webhookID,webhookToken);
         interval1 = setInterval(fetchProposalStats, 300000, webhookID, webhookToken);
         // Checks for ending proposals every hour
         await fetchProposalEtas(webhookID,webhookToken);
-        interval2 = setInterval(fetchProposalEtas, 6000000, webhookID, webhookToken);
+        interval2 = setInterval(fetchProposalEtas, 3600000, webhookID, webhookToken);
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
