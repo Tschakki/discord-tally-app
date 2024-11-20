@@ -1,9 +1,9 @@
 import 'dotenv/config';
-import { getRPSChoices } from './game.js';
+//import { getRPSChoices } from './game.js';
 import { capitalize, InstallGlobalCommands } from './utils.js';
 
 // Get the game choices from game.js
-function createCommandChoices() {
+/* function createCommandChoices() {
   const choices = getRPSChoices();
   const commandChoices = [];
 
@@ -15,7 +15,7 @@ function createCommandChoices() {
   }
 
   return commandChoices;
-}
+} */
 
 // Simple test command
 const TEST_COMMAND = {
@@ -32,7 +32,7 @@ const TRACK_COMMAND = {
 };
 
 // Command containing options
-const CHALLENGE_COMMAND = {
+/* const CHALLENGE_COMMAND = {
   name: 'challenge',
   description: 'Challenge to a match of rock paper scissors',
   options: [
@@ -45,7 +45,7 @@ const CHALLENGE_COMMAND = {
     },
   ],
   type: 1,
-};
+}; */
 
 const ALL_COMMANDS = [TEST_COMMAND, TRACK_COMMAND];
 

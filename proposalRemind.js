@@ -1,19 +1,26 @@
 import { fetcher } from "./fetcher.js";
-import { ProposalsDocument } from "./queries.js";
+import { ProposalsDocument } from "./new-queries.js";
 
 export async function fetchProposalEtas(whID, whToken) {
 
-    const governorAddr = "0xcBf493d00b17Ba252FEB4403BcFf2F0520C52C7D";
-    const chainId = "eip155:4202";
+    const governorAddr = "0x58a61b1807a7bDA541855DaAEAEe89b1DDA48568";
+    const chainId = "eip155:1135";
 
     // Fetch proposals where voting period ends soon
     const proposalData = await fetcher({
         query: ProposalsDocument,
         variables: {
-            chainId,
-            governors: [governorAddr],
-            pagination: { limit: 3, offset: 0 },
-            sort: { field: "END_BLOCK", order: "DESC" },
+            input: {
+                filters: {
+                    governorId: chainId + ':' + governorAddr,
+                    includeArchived: true,
+                    isDraft: false,
+                },
+                page: {
+                    limit:3
+                },
+                sort: {isDescending: true, sortBy: "id"}
+            }
         },
     });
 

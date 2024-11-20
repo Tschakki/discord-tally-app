@@ -17,7 +17,7 @@ export const fetcher = async ({ query, variables }) => {
       .then((json) => {
         if (json?.errors) {
           console.error("error when fetching");
-  
+          console.error(json.errors);
           return null;
         }
   

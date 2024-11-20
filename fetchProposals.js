@@ -1,11 +1,11 @@
 import { fetcher } from "./fetcher.js";
-import { GovernorsDocument, ProposalsDocument, Chains } from "./queries.js";
+import { GovernorDocument, ProposalsDocument, Chains } from "./new-queries.js";
 import { getProposalCount, setProposalCount } from "./data.js";
 
 export async function fetchProposalStats(whID, whToken) {
     let messageContent;
-    const governorAddr = "0xcBf493d00b17Ba252FEB4403BcFf2F0520C52C7D";
-    const chainId = "eip155:4202";
+    const governorAddr = "0x58a61b1807a7bDA541855DaAEAEe89b1DDA48568";
+    const chainId = "eip155:1135";
     let proposalCount = getProposalCount();
     /* const chainData = await fetcher({
         query: Chains,
@@ -18,16 +18,19 @@ export async function fetchProposalStats(whID, whToken) {
     console.log(chainData); */
     // Fetch governors for specified chain ID
     const govData = await fetcher({
-        query: GovernorsDocument,
+        query: GovernorDocument,
         variables: {
-        chainIds: [chainId],
-        pagination: { limit: 10, offset: 0 },
-        sort: { field: "TOTAL_PROPOSALS", order: "DESC" },
+            input: {
+                id: chainId + ':' + governorAddr,
+                slug: 'Lisk Governor'
+            }
         }
     });
 
+    console.log("+++++ gov data +++++");
+    console.log(govData);
     // Extract proposal stats from governor with most proposals
-    const { proposalStats } = govData.governors[0] ?? [];
+    const { proposalStats } = govData.governor ?? [];
     console.log("+++++ gov data +++++");
     console.log(govData);
 /*     for (let i = 0; i < govData.governors.length; i++) {
@@ -46,10 +49,17 @@ export async function fetchProposalStats(whID, whToken) {
         const proposalData = await fetcher({
         query: ProposalsDocument,
         variables: {
-            chainId,
-            governors: [governorAddr],
-            pagination: { limit: newProposalsCount, offset: 0 },
-            sort: { field: "CREATED_AT", order: "DESC" },
+            input: {
+                filters: {
+                    governorId: chainId + ':' + governorAddr,
+                    includeArchived: true,
+                    isDraft: false,
+                },
+                page: {
+                    limit:newProposalsCount
+                },
+                sort: {isDescending: true, sortBy: "id"}
+            }
         },
         })
         const { proposals } = proposalData ?? [];
