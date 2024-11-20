@@ -47,7 +47,7 @@ export async function fetchProposalEtas(whID, whToken) {
         // If voting period ends in less than 1,5h
         if (proposalEnd < datePost.getTime() && proposalEnd > dateNow) {
             messageContent += "!!! Reminder: Proposal Voting period ending soon !!! \n";
-            messageContent += "[" + proposals[i].title + "](<https://www.tally.xyz/gov/3rd-testing/proposal/" + proposals[i].id + ">) \n";
+            messageContent += "[" + proposals[i].title + "](<https://www.tally.xyz/gov/lisk/proposal/" + proposals[i].id + ">) \n";
             messageContent +=  "Voting period ends at: " + new Date(proposals[i].end.timestamp) + "\n";
 
         } else if (proposalEnd < dateNow && proposalEnd > datePre.getTime()) {
@@ -58,7 +58,7 @@ export async function fetchProposalEtas(whID, whToken) {
 
             let latestStatus = proposals[i].statusChanges.length - 1;
             messageContent += "!!! Proposal Voting period ended !!! \n";
-            messageContent += "[" + proposals[i].title + "](<https://www.tally.xyz/gov/3rd-testing/proposal/" + proposals[i].id + ">) \n";
+            messageContent += "[" + proposals[i].title + "](<https://www.tally.xyz/gov/lisk/proposal/" + proposals[i].id + ">) \n";
             messageContent +=  "Voting result: " + proposals[i].statusChanges[latestStatus].type + "\n";
             messageContent +=  "For: " + proposals[i].voteStats[0].votes + " votes , voteweight: " + proposals[i].voteStats[0].weight + " \n";
             messageContent +=  "Against: " + proposals[i].voteStats[1].votes + " votes , voteweight: " + proposals[i].voteStats[1].weight + "\n";

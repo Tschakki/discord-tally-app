@@ -31,8 +31,6 @@ export async function fetchProposalStats(whID, whToken) {
     console.log(govData);
     // Extract proposal stats from governor with most proposals
     const { proposalStats } = govData.governor ?? [];
-    console.log("+++++ gov data +++++");
-    console.log(govData);
 /*     for (let i = 0; i < govData.governors.length; i++) {
         console.log(govData.governors[i].proposalStats);
     } */
@@ -74,7 +72,7 @@ export async function fetchProposalStats(whID, whToken) {
         for (let i = 0; i < newProposalsCount; i++) {
             // Add proposal title and proposer to message
             messageContent += "------------------------------------ \n";
-            messageContent += "[" + proposals[i].title + "](<https://www.tally.xyz/gov/3rd-testing/proposal/" + proposals[i].id + ">) \n";
+            messageContent += "[" + proposals[i].title + "](<https://www.tally.xyz/gov/lisk/proposal/" + proposals[i].id + ">) \n";
             let proposer;
             if (proposals[i].proposer.name) {
                 proposer = proposals[i].proposer.name;
