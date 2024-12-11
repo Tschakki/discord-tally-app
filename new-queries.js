@@ -56,10 +56,29 @@ export const Chains = `query Chains {
   
   export const ProposalsDocument = `query Proposals($input: ProposalsInput!) {
     proposals(input: $input) {
-          pageInfo {
-            firstCursor
-            lastCursor
-            count
+      nodes {
+        ... on Proposal {
+          id 
+          metadata {
+            title
           }
+          proposer {
+            name
+            ens
+            address
+          }
+          end {
+            ... on Block {
+              timestamp
+            }
+          }
+          status
+        }
+      }
+      pageInfo {
+        firstCursor
+        lastCursor
+        count
+      }
     }
   }`;

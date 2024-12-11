@@ -4,8 +4,8 @@ import { getProposalCount, setProposalCount } from "./data.js";
 
 export async function fetchProposalStats(whID, whToken) {
     let messageContent;
-    const governorAddr = "0x58a61b1807a7bDA541855DaAEAEe89b1DDA48568";
-    const chainId = "eip155:1135";
+    const governorAddr = "0xcBf493d00b17Ba252FEB4403BcFf2F0520C52C7D";
+    const chainId = "eip155:4202";
     let proposalCount = getProposalCount();
     /* const chainData = await fetcher({
         query: Chains,
@@ -63,40 +63,42 @@ export async function fetchProposalStats(whID, whToken) {
         const { proposals } = proposalData ?? [];
         console.log("+++++ proposal data +++++");
         console.log(proposalData);
+        console.log(proposals.nodes[0]);
         setProposalCount(proposalStats);
 
         // Create message content that announces new proposals
         messageContent = "!!! Announcement: New Proposal !!! \n";
-
+        let jsonData;
         // For every new proposal
         for (let i = 0; i < newProposalsCount; i++) {
             // Add proposal title and proposer to message
             messageContent += "------------------------------------ \n";
-            messageContent += "[" + proposals[i].title + "](<https://www.tally.xyz/gov/lisk/proposal/" + proposals[i].id + ">) \n";
+            messageContent += "[" + proposals.nodes[i].metadata.title + "](<https://www.tally.xyz/gov/lisk/proposal/" + proposals.nodes[i].id + ">) \n";
             let proposer;
-            if (proposals[i].proposer.name) {
-                proposer = proposals[i].proposer.name;
-            } else if (proposals[i].proposer.ens) {
-                proposer = proposals[i].proposer.ens;
+            if (proposals.nodes[i].proposer.name) {
+                proposer = proposals.nodes[i].proposer.name;
+            } else if (proposals.nodes[i].proposer.ens) {
+                proposer = proposals.nodes[i].proposer.ens;
             } else {
-                proposer = proposals[i].proposer.address;
+                proposer = proposals.nodes[i].proposer.address;
             }
             messageContent += "Proposed by: " + proposer + "\n";
+            jsonData = { "content": messageContent };
+            console.log("+++++ messageContent +++++");
+            console.log(messageContent);
+            // Send message to Discord channel via webhook
+            const webhookURL = "https://discord.com/api/webhooks/" + whID + "/" + whToken;
+            //fetch("https://discord.com/api/webhooks/1228018587797553243/1eMBRsZRdSVc5JfT6E-GUF_QNOUfE_ipqxM8ujNC6GB0C0y47z7fpnluApYbzBtF9KND", {
+            //fetch("https://discord.com/api/webhooks/1228281325673250857/cOLF9Bcqc8SsOJkY2YEqxfV8gRwRjdrNOJZEOq9gbBo7p1MP9ej4ALkc2f3l25rYB-mV", {
+            fetch(webhookURL, {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify(jsonData)
+              }).then(res => {
+                messageContent = null;
+                //console.log("Request complete! response:", res);
+              }).catch(err => console.error(err));
         }
-        const jsonData = { "content": messageContent };
-
-        // Send message to Discord channel via webhook
-        const webhookURL = "https://discord.com/api/webhooks/" + whID + "/" + whToken;
-        //fetch("https://discord.com/api/webhooks/1228018587797553243/1eMBRsZRdSVc5JfT6E-GUF_QNOUfE_ipqxM8ujNC6GB0C0y47z7fpnluApYbzBtF9KND", {
-        //fetch("https://discord.com/api/webhooks/1228281325673250857/cOLF9Bcqc8SsOJkY2YEqxfV8gRwRjdrNOJZEOq9gbBo7p1MP9ej4ALkc2f3l25rYB-mV", {
-        fetch(webhookURL, {
-            method: "POST",
-            headers: {'Content-Type': 'application/json'}, 
-            body: JSON.stringify(jsonData)
-          }).then(res => {
-            messageContent = null;
-            //console.log("Request complete! response:", res);
-          });
     // If proposal count is not initialized yet
     } else if (proposalCount.total == 0){
         // Initialize proposal count values

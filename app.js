@@ -73,16 +73,28 @@ app.post('/interactions', async function (req, res) {
       // If tracking is not active, start it
       } else {
         // Check guild_id to determine which webhook to use
+        // Lightcurve
         if (guild_id === "1228281036635508736") {
-          webhookID = "1228281325673250857";
-          webhookToken = "cOLF9Bcqc8SsOJkY2YEqxfV8gRwRjdrNOJZEOq9gbBo7p1MP9ej4ALkc2f3l25rYB-mV";
+          webhookID = "1245678260617220167";
+          webhookToken = "rUAYwMAXbremY1hxGvr4NH2Sxs_QsiGtQnIwvhTVWDTpJPCN3tu9PuRFafVHijjtuHE6";
+          //webhookID = "1228281325673250857";
+          //webhookToken = "cOLF9Bcqc8SsOJkY2YEqxfV8gRwRjdrNOJZEOq9gbBo7p1MP9ej4ALkc2f3l25rYB-mV";
+        // Chsk
+        } else if (guild_id === "723485885374660638") {
+          webhookID = "1228018587797553243";
+          webhookToken = "1eMBRsZRdSVc5JfT6E-GUF_QNOUfE_ipqxM8ujNC6GB0C0y47z7fpnluApYbzBtF9KND";
+        // Lisk
+        } else if (guild_id === "405002561775599619") {
+          webhookID = "1245678260617220167";
+          webhookToken = "rUAYwMAXbremY1hxGvr4NH2Sxs_QsiGtQnIwvhTVWDTpJPCN3tu9PuRFafVHijjtuHE6";
         } 
         // Checks for new proposals every 5min
         await fetchProposalStats(webhookID,webhookToken);
         interval1 = setInterval(fetchProposalStats, 300000, webhookID, webhookToken);
         // Checks for ending proposals every hour
         await fetchProposalEtas(webhookID,webhookToken);
-        interval2 = setInterval(fetchProposalEtas, 3600000, webhookID, webhookToken);
+        interval2 = setInterval(fetchProposalEtas, 300000, webhookID, webhookToken);
+        //interval2 = setInterval(fetchProposalEtas, 3600000, webhookID, webhookToken);
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
