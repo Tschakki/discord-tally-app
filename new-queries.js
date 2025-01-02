@@ -71,6 +71,9 @@ export const Chains = `query Chains {
             ... on Block {
               timestamp
             }
+            ... on BlocklessTimestamp {
+              timestamp
+            }
           }
           status
         }
