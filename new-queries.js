@@ -76,6 +76,12 @@ export const Chains = `query Chains {
             }
           }
           status
+          voteStats {
+            type
+            votesCount
+            votersCount
+            percent
+          }
         }
       }
       pageInfo {

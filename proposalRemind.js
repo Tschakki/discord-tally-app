@@ -8,6 +8,7 @@ export async function fetchProposalEtas(whID, whToken) {
     const governorAddr = "0xcBf493d00b17Ba252FEB4403BcFf2F0520C52C7D";
     const chainId = "eip155:4202";
     // Fetch proposals where voting period ends soon
+    console.log("+++++ REQUEST proposal data +++++");
     const proposalData = await fetcher({
         query: ProposalsDocument,
         variables: {
@@ -27,22 +28,23 @@ export async function fetchProposalEtas(whID, whToken) {
 
     console.log("+++++ proposal data +++++");
     console.log(proposalData);
-    console.log(proposalData.proposals.nodes[0]);
+    //console.log(proposalData.proposals.nodes[0]);
     const { proposals } = proposalData ?? [];
     // Date now as unix timestamp
     const dateNow = Date.now();
     // Now + 1,5h as Date
     //const datePost = new Date(dateNow + (5400*1000));
-    const datePost = new Date(dateNow + (540*1000));
+    const datePost = new Date(dateNow + (120*1000));
     // Now - 1h as Date
     //const datePre = new Date(dateNow - (3600*1000));
-    const datePre = new Date(dateNow - (360*1000));
+    const datePre = new Date(dateNow - (60*1000));
     let messageContent = "";
     let jsonData;
     // For every proposal
     for (let i = 0; i < proposals.nodes.length; i++) {
+        console.log(proposals.nodes[i]);
         console.log("+++END+++");
-        const proposalEnd =  proposals.nodes[i].end.timestamp;
+        const proposalEnd =  Date.parse(proposals.nodes[i].end.timestamp);
         console.log(proposalEnd);
         // If voting period ends in less than 1,5h
         if (proposalEnd < datePost.getTime() && proposalEnd > dateNow) {
@@ -67,8 +69,10 @@ export async function fetchProposalEtas(whID, whToken) {
             console.log("+++++ no ending proposals +++++");
             console.log("+++++ date now +++++");
             console.log(dateNow);
-            console.log("+++++ date 1,5h +++++");
+            console.log("+++++ date POST 1,5h +++++");
             console.log(datePost.getTime());
+            console.log("+++++ date PRE 1h +++++");
+            console.log(datePre.getTime());
         }
         if (messageContent) {
             jsonData = { "content": messageContent };
