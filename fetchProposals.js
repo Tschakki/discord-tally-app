@@ -44,6 +44,7 @@ export async function fetchProposalStats(whID, whToken) {
     // If new proposals have been created
     if (proposalCount.total > 0 && proposalCount.total < proposalStats.total) {
         const newProposalsCount =  proposalStats.total - proposalCount.total;
+        setProposalCount(proposalStats);
         // Fetch new proposals
         const proposalData = await fetcher({
         query: ProposalsDocument,
@@ -61,12 +62,10 @@ export async function fetchProposalStats(whID, whToken) {
             }
         },
         })
-        const { proposals } = proposalData ?? [];
+        const { proposals } = proposalData  ?? [];
         console.log("+++++ proposal data +++++");
         console.log(proposalData);
         console.log(proposals.nodes[0]);
-        setProposalCount(proposalStats);
-
         // Create message content that announces new proposals
         messageContent = "!!! Announcement: New Proposal created !!! \n";
         let jsonData;
@@ -90,15 +89,12 @@ export async function fetchProposalStats(whID, whToken) {
             console.log(messageContent);
             // Send message to Discord channel via webhook
             const webhookURL = "https://discord.com/api/webhooks/" + whID + "/" + whToken;
-            //fetch("https://discord.com/api/webhooks/1228018587797553243/1eMBRsZRdSVc5JfT6E-GUF_QNOUfE_ipqxM8ujNC6GB0C0y47z7fpnluApYbzBtF9KND", {
-            //fetch("https://discord.com/api/webhooks/1228281325673250857/cOLF9Bcqc8SsOJkY2YEqxfV8gRwRjdrNOJZEOq9gbBo7p1MP9ej4ALkc2f3l25rYB-mV", {
             fetch(webhookURL, {
                 method: "POST",
                 headers: {'Content-Type': 'application/json'}, 
                 body: JSON.stringify(jsonData)
               }).then(res => {
                 messageContent = null;
-                //console.log("Request complete! response:", res);
               }).catch(err => console.error(err));
         }
     // If proposal count is not initialized yet

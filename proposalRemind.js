@@ -16,7 +16,7 @@ export async function fetchProposalEtas(whID, whToken) {
                     isDraft: false,
                 },
                 page: {
-                    limit:3
+                    limit:10
                 },
                 sort: {isDescending: true, sortBy: "id"}
             }
@@ -25,12 +25,13 @@ export async function fetchProposalEtas(whID, whToken) {
 
     console.log("+++++ proposal data +++++");
     console.log(proposalData);
-    //console.log(proposalData.proposals.nodes[0]);
     const { proposals } = proposalData ?? [];
+    console.log(proposals.nodes[0]);
+    const result = words;
     // Date now as unix timestamp
     const dateNow = Date.now();
-    // Now + 1,5h as Date
-    const datePost = new Date(dateNow + (5400*1000));
+    // Now + 24h as Date
+    const datePost = new Date(dateNow + (3600*1000*24));
     // Now - 1h as Date
     const datePre = new Date(dateNow - (3600*1000));
     let messageContent = "";
@@ -38,7 +39,7 @@ export async function fetchProposalEtas(whID, whToken) {
     // For every proposal
     for (let i = 0; i < proposals.nodes.length; i++) {
         let proposalEnd =  Date.parse(proposals.nodes[i].end.timestamp);
-        // If voting period ends in less than 1,5h
+        // If voting period ends in less than 24h
         if (proposalEnd < datePost.getTime() && proposalEnd > dateNow) {
             messageContent += "!!! Reminder: Proposal Voting period ending soon !!! \n";
             messageContent += "[" + proposals.nodes[i].metadata.title + "](<https://www.tally.xyz/gov/lisk/proposal/" + proposals.nodes[i].id + ">) \n";
@@ -58,16 +59,7 @@ export async function fetchProposalEtas(whID, whToken) {
             messageContent +=  "Against: " + proposals.nodes[i].voteStats[1].percent + "%" + "\n";
             messageContent +=  "Abstain: " + proposals.nodes[i].voteStats[2].percent + "%" + "\n";
             messageContent += "------------------------------------ \n";
-        } else {
-            console.log("+++++ no ending proposals +++++");
-            /* console.log("+++++ date now +++++");
-            console.log(dateNow);
-            console.log("+++++ date POST 1,5h +++++");
-            console.log(datePost.getTime());
-            console.log("+++++ date PRE 1h +++++");
-            console.log(datePre.getTime()); */
-        }
-        
+        } 
     }
     if (messageContent) {
         jsonData = { "content": messageContent };
@@ -75,29 +67,20 @@ export async function fetchProposalEtas(whID, whToken) {
         console.log(messageContent);
         // Send message to Discord channel via webhook
         const webhookURL = "https://discord.com/api/webhooks/" + whID + "/" + whToken;
-        //fetch("https://discord.com/api/webhooks/1228018587797553243/1eMBRsZRdSVc5JfT6E-GUF_QNOUfE_ipqxM8ujNC6GB0C0y47z7fpnluApYbzBtF9KND", {
-        //fetch("https://discord.com/api/webhooks/1228281325673250857/cOLF9Bcqc8SsOJkY2YEqxfV8gRwRjdrNOJZEOq9gbBo7p1MP9ej4ALkc2f3l25rYB-mV", {
         fetch(webhookURL, {
             method: "POST",
             headers: {'Content-Type': 'application/json'}, 
             body: JSON.stringify(jsonData)
         }).then(res => {
             messageContent = null;
-            //console.log("Request complete! response:", res);
         }).catch(err => console.error(err));
+    } else {
+        console.log("+++++ no ending proposals +++++");
+        /* console.log("+++++ date now +++++");
+        console.log(dateNow);
+        console.log("+++++ date POST 1,5h +++++");
+        console.log(datePost.getTime());
+        console.log("+++++ date PRE 1h +++++");
+        console.log(datePre.getTime()); */
     }
-
-/*     const jsonData = { "content": messageContent };
-
-    const webhookURL = "https://discord.com/api/webhooks/" + whID + "/" + whToken;
-    //fetch("https://discord.com/api/webhooks/1228018587797553243/1eMBRsZRdSVc5JfT6E-GUF_QNOUfE_ipqxM8ujNC6GB0C0y47z7fpnluApYbzBtF9KND", {
-    //fetch("https://discord.com/api/webhooks/1228281325673250857/cOLF9Bcqc8SsOJkY2YEqxfV8gRwRjdrNOJZEOq9gbBo7p1MP9ej4ALkc2f3l25rYB-mV", {
-    fetch(webhookURL, {
-        method: "POST",
-        headers: {'Content-Type': 'application/json'}, 
-        body: JSON.stringify(jsonData)
-        }).then(res => {
-        messageContent = null;
-        //console.log("Request complete! response:", res);
-        }); */
 }

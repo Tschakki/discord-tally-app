@@ -29,8 +29,7 @@ let webhookToken;
  */
 app.post('/interactions', async function (req, res) {
   // Interaction type and data
-  const { type, id, data, guild_id } = req.body;
-
+  const { type, id, data, guild_id, token } = req.body;
   /**
    * Handle verification requests
    */
@@ -76,8 +75,6 @@ app.post('/interactions', async function (req, res) {
         // Check guild_id to determine which webhook to use
         // Lightcurve
         if (guild_id === "1228281036635508736") {
-          //webhookID = "1245678260617220167";
-         // webhookToken = "rUAYwMAXbremY1hxGvr4NH2Sxs_QsiGtQnIwvhTVWDTpJPCN3tu9PuRFafVHijjtuHE6";
           webhookID = "1228281325673250857";
           webhookToken = "cOLF9Bcqc8SsOJkY2YEqxfV8gRwRjdrNOJZEOq9gbBo7p1MP9ej4ALkc2f3l25rYB-mV";
         // Chsk
