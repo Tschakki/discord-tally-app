@@ -27,7 +27,6 @@ export async function fetchProposalEtas(whID, whToken) {
     console.log(proposalData);
     const { proposals } = proposalData ?? [];
     console.log(proposals.nodes[0]);
-    const result = words;
     // Date now as unix timestamp
     const dateNow = Date.now();
     // Now + 24h as Date
