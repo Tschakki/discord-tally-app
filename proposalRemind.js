@@ -30,11 +30,9 @@ export async function fetchProposalEtas(whID, whToken) {
     // Date now as unix timestamp
     const dateNow = Date.now();
     // Now + 1,5h as Date
-    //const datePost = new Date(dateNow + (5400*1000));
-    const datePost = new Date(dateNow + (540*1000));
+    const datePost = new Date(dateNow + (5400*1000));
     // Now - 1h as Date
-    //const datePre = new Date(dateNow - (3600*1000));
-    const datePre = new Date(dateNow - (360*1000));
+    const datePre = new Date(dateNow - (3600*1000));
     let messageContent = "";
     let jsonData;
     // For every proposal

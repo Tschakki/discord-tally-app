@@ -92,11 +92,9 @@ app.post('/interactions', async function (req, res) {
         // Checks for new proposals every 5min
         await fetchProposalStats(webhookID,webhookToken);
         interval1 = setInterval(fetchProposalStats, NEW_PROPOSAL_INTERVALL, webhookID, webhookToken);
-        //interval1 = setInterval(fetchProposalStats, 300000, webhookID, webhookToken);
         // Checks for ending proposals every hour
         await fetchProposalEtas(webhookID,webhookToken);
-        interval2 = setInterval(fetchProposalEtas, NEW_PROPOSAL_INTERVALL, webhookID, webhookToken);
-        //interval2 = setInterval(fetchProposalEtas, 3600000, webhookID, webhookToken);
+        interval2 = setInterval(fetchProposalEtas, CHECK_PROPOSALS_INTERVALL, webhookID, webhookToken);
         return res.send({
           type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
           data: {
