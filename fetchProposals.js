@@ -4,8 +4,8 @@ import { getProposalCount, setProposalCount } from "./data.js";
 
 export async function fetchProposalStats(whID, whToken) {
     let messageContent;
-    const governorAddr = "0xcBf493d00b17Ba252FEB4403BcFf2F0520C52C7D";
-    const chainId = "eip155:4202";
+    const governorAddr = process.env.GOVERNOR_CONTRACT;
+    const chainId = process.env.CHAIN_ID;
     let proposalCount = getProposalCount();
     /* const chainData = await fetcher({
         query: Chains,
@@ -17,6 +17,7 @@ export async function fetchProposalStats(whID, whToken) {
     console.log("+++++ chain data +++++");
     console.log(chainData); */
     // Fetch governors for specified chain ID
+    console.log("+++++ REQUEST gov data +++++");
     const govData = await fetcher({
         query: GovernorDocument,
         variables: {
@@ -67,7 +68,7 @@ export async function fetchProposalStats(whID, whToken) {
         setProposalCount(proposalStats);
 
         // Create message content that announces new proposals
-        messageContent = "!!! Announcement: New Proposal !!! \n";
+        messageContent = "!!! Announcement: New Proposal created !!! \n";
         let jsonData;
         // For every new proposal
         for (let i = 0; i < newProposalsCount; i++) {
@@ -83,6 +84,7 @@ export async function fetchProposalStats(whID, whToken) {
                 proposer = proposals.nodes[i].proposer.address;
             }
             messageContent += "Proposed by: " + proposer + "\n";
+            messageContent += "------------------------------------ \n";
             jsonData = { "content": messageContent };
             console.log("+++++ messageContent +++++");
             console.log(messageContent);

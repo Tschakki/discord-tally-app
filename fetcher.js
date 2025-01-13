@@ -1,7 +1,6 @@
 import 'dotenv/config';
 
 export const fetcher = async ({ query, variables }) => {
-
     return fetch(process.env.VITE_TALLY_API_URL, {
       method: "POST",
       headers: {
