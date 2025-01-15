@@ -5,7 +5,6 @@ export async function fetchProposalEtas(whID, whToken) {
     const governorAddr = process.env.GOVERNOR_CONTRACT;
     const chainId = process.env.CHAIN_ID;
     // Fetch proposals where voting period ends soon
-    console.log("+++++ REQUEST proposal data +++++");
     const proposalData = await fetcher({
         query: ProposalsDocument,
         variables: {
@@ -23,10 +22,8 @@ export async function fetchProposalEtas(whID, whToken) {
         },
     });
 
-    console.log("+++++ proposal data +++++");
-    console.log(proposalData);
     const { proposals } = proposalData ?? [];
-    console.log(proposals.nodes[0]);
+    //console.log(proposals.nodes[0]);
     // Date now as unix timestamp
     const dateNow = Date.now();
     // Now + 24h as Date
@@ -46,11 +43,6 @@ export async function fetchProposalEtas(whID, whToken) {
             messageContent += "------------------------------------ \n";
         // If voting period ended in the last hour
         } else if (proposalEnd < dateNow && proposalEnd > datePre.getTime()) {
-
-            console.log("+++ Status Change +++");
-            console.log(proposals.nodes[i].status);
-            console.log(proposals.nodes[i].voteStats);
-
             messageContent += "!!! Proposal Voting period ended !!! \n";
             messageContent += "[" + proposals.nodes[i].metadata.title + "](<https://www.tally.xyz/gov/lisk/proposal/" + proposals.nodes[i].id + ">) \n";
             messageContent +=  "Voting result: " + proposals.nodes[i].status + "\n";

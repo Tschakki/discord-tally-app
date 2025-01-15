@@ -17,7 +17,6 @@ export async function fetchProposalStats(whID, whToken) {
     console.log("+++++ chain data +++++");
     console.log(chainData); */
     // Fetch governors for specified chain ID
-    console.log("+++++ REQUEST gov data +++++");
     const govData = await fetcher({
         query: GovernorDocument,
         variables: {
@@ -27,19 +26,8 @@ export async function fetchProposalStats(whID, whToken) {
             }
         }
     });
-
-    console.log("+++++ gov data +++++");
-    console.log(govData);
     // Extract proposal stats from governor with most proposals
     const { proposalStats } = govData.governor ?? [];
-/*     for (let i = 0; i < govData.governors.length; i++) {
-        console.log(govData.governors[i].proposalStats);
-    } */
-    console.log("+++++ proposal count +++++");
-    console.log("+++++ new +++++");
-    console.log(proposalStats);
-    console.log("+++++ old +++++");
-    console.log(proposalCount);
 
     // If new proposals have been created
     if (proposalCount.total > 0 && proposalCount.total < proposalStats.total) {
