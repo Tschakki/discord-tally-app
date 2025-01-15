@@ -91,7 +91,5 @@ export async function fetchProposalStats(whID, whToken) {
         setProposalCount(proposalStats);
         console.log("+++++ initial proposal count +++++");
         console.log(proposalStats);
-    } else {
-        console.log("+++++ no new proposals +++++");
     }
 }
