@@ -1,5 +1,6 @@
 import { fetcher } from "./fetcher.js";
 import { ProposalsDocument } from "./new-queries.js";
+import {CHECK_PROPOSALS_INTERVALL} from "./app.js"
 
 export async function fetchProposalEtas(whID, whToken) {
     const governorAddr = process.env.GOVERNOR_CONTRACT;
@@ -27,9 +28,9 @@ export async function fetchProposalEtas(whID, whToken) {
     // Date now as unix timestamp
     const dateNow = Date.now();
     // Now + 24h as Date
-    const datePost = new Date(dateNow + (3600*1000*24));
-    // Now - 1h as Date
-    const datePre = new Date(dateNow - (3600*1000));
+    const datePost = new Date(dateNow + CHECK_PROPOSALS_INTERVALL);
+    // Now - 24h as Date
+    const datePre = new Date(dateNow - CHECK_PROPOSALS_INTERVALL);
     let messageContent = "";
     let jsonData;
     // For every proposal
@@ -41,7 +42,7 @@ export async function fetchProposalEtas(whID, whToken) {
             messageContent += "[" + proposals.nodes[i].metadata.title + "](<https://www.tally.xyz/gov/lisk/proposal/" + proposals.nodes[i].id + ">) \n";
             messageContent +=  "Voting period ends at: " + new Date(proposals.nodes[i].end.timestamp) + "\n";
             messageContent += "------------------------------------ \n";
-        // If voting period ended in the last hour
+        // If voting period ended in the last 24 hours
         } else if (proposalEnd < dateNow && proposalEnd > datePre.getTime()) {
             messageContent += "!!! Proposal Voting period ended !!! \n";
             messageContent += "[" + proposals.nodes[i].metadata.title + "](<https://www.tally.xyz/gov/lisk/proposal/" + proposals.nodes[i].id + ">) \n";

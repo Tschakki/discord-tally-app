@@ -18,8 +18,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 // Parse request body and verifies incoming requests using discord-interactions package
 app.use(express.json({ verify: VerifyDiscordRequest(process.env.PUBLIC_KEY) }));
-const NEW_PROPOSAL_INTERVALL = 300000;
-const CHECK_PROPOSALS_INTERVALL = 3600000;
+// 5 min
+export const NEW_PROPOSAL_INTERVALL = (300 * 1000);
+// 24 h
+export const CHECK_PROPOSALS_INTERVALL = (3600 * 1000 * 24);
 let interval1;
 let interval2;
 let webhookID;
@@ -29,7 +31,7 @@ let webhookToken;
  */
 app.post('/interactions', async function (req, res) {
   // Interaction type and data
-  const { type, id, data, guild_id, token } = req.body;
+  const { type, data, guild_id } = req.body;
   /**
    * Handle verification requests
    */
